@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto update(long userId, long itemId, UpdateItemRequest request) {
         Item updateItem = itemStorage.findItemId(itemId);
         if (updateItem.getIdOwner() != userId) {
-            throw new NotFoundException("предмет с id = " + itemId + " не принадлежит пользователю с id = " + userId);
+            throw new NotFoundException("предмет с id = " + itemId + " не найден у пользователя с id = " + userId);
         }
         log.debug("Предмет до обновления {}", updateItem);
         log.debug("Обновляемые поля {}", request);
@@ -58,6 +58,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<ItemDto> findItemUserId(long userId) {
+        userStorage.findUserId(userId);
         return itemStorage.findItemUserId(userId).stream()
                 .map(ItemMapper::mapToItemDto)
                 .toList();

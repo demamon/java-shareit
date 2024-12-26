@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.UserChecker;
 import ru.practicum.shareit.user.dto.UpdateUserRequest;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.util.Collection;
@@ -32,16 +31,17 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@Valid @RequestBody User user) {
-        UserChecker.emailChecker(user.getEmail());
-        log.trace("Передали на добавление пользователя {}", user);
-        return userService.create(user);
+    public UserDto create(@Valid @RequestBody UserDto userDto) {
+        UserChecker.emailChecker(userDto.getEmail());
+        log.trace("Передали на добавление пользователя {}", userDto);
+        return userService.create(userDto);
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable long id,
                           @Valid @RequestBody UpdateUserRequest request) {
         log.trace("Передали на обновление пользователя {} {}", id, request);
+        System.out.println("Мы зашли в обновлении пользователя");
         return userService.update(id, request);
     }
 

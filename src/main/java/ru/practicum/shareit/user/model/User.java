@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.user.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,10 +8,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Item {
+public class User {
     Long id;
     String name;
-    String description;
-    Boolean available;
-    Long idOwner;
+    String email;
 }

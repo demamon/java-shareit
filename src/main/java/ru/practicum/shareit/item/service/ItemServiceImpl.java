@@ -163,6 +163,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentResponseDto addComment(Long itemId, Long userId, CommentDto commentDto) {
         log.trace("Добавление отзыва к вещи с id - {}", itemId);
+        if (commentDto.getText().isBlank()) {
+            log.error("текст комментария пустой");
+            throw new ValidationException("текст комментария пустой");
+        }
         User user = userStorage.findById(userId).orElseThrow(()
                 -> new NotFoundException("Пользователь не найден"));
         Item item = itemStorage.findById(itemId).orElseThrow(()

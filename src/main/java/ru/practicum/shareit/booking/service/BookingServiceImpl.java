@@ -40,10 +40,9 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponseDto create(Long userId, BookingDto bookingDto) {
         log.trace("Создание бронирования - {} вещи с id - {}", bookingDto, userId);
-        User user = userStorage.findById(userId).orElseThrow(()
-                -> new NotFoundException("Пользователь не найден"));
+        User user = checkUser(userId);
         Item item = itemStorage.findById(bookingDto.getItemId()).orElseThrow(()
-                -> new NotFoundException("Предмет не найден"));
+                -> new NotFoundException("Предмет с id = " + bookingDto.getItemId() + " не найден"));
         if (!item.getAvailable()) {
             throw new ValidationException("Вещь не доступна для бронирования");
         }
@@ -59,8 +58,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto approveBooking(Long bookingId, Long userId, Boolean approved) {
         log.trace("Подтверждение/отклонение бронирования с id - {} пользователем с id - {}", bookingId, userId);
-        Booking booking = bookingStorage.findById(bookingId).orElseThrow(()
-                -> new NotFoundException("Бронирование не найдено"));
+        Booking booking = checkBooking(bookingId);
         Long itemUserId = booking.getItem().getOwner().getId();
         if (!userId.equals(itemUserId)) {
             throw new ValidationException("Пользователь не является владельцем вещи");
@@ -80,10 +78,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto findBookingById(Long bookingId, Long userId) {
         log.trace("Получение бронирования с id - {} пользователем с id - {}", bookingId, userId);
-        User user = userStorage.findById(userId).orElseThrow(()
-                -> new NotFoundException("Пользователь с id " + userId + " не найден"));
-        Booking booking = bookingStorage.findById(bookingId).orElseThrow(()
-                -> new NotFoundException("Бронирование не найдено"));
+        User user = checkUser(userId);
+        Booking booking = checkBooking(bookingId);
         log.debug("пользователь запрашивающий бронь - {}", user);
         log.debug("запрашиваемая бронь - {}", booking);
         if (!userId.equals(booking.getUser().getId()) && (!userId.equals(booking.getItem().getOwner().getId()))) {
@@ -97,8 +93,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> findAllBookingsByUser(Long userId, State state) {
         log.trace("Получение всех бронирований пользователя с id - {}", userId);
         LocalDateTime now = LocalDateTime.now();
-        userStorage.findById(userId).orElseThrow(()
-                -> new NotFoundException("Пользователь с id " + userId + " не найден"));
+        checkUser(userId);
         List<Booking> bookings = switch (state) {
             case PAST -> bookingStorage.findByUserIdAndEndBeforeOrderByStartDesc(userId, now);
             case FUTURE -> bookingStorage.findByUserIdAndStartAfterOrderByStartDesc(userId, now);
@@ -115,8 +110,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingResponseDto> findAllBookingsByItems(Long userId, State state) {
         log.trace("Получение всех бронирований всех вещей пользователя с id - {}", userId);
-        userStorage.findById(userId).orElseThrow(()
-                -> new NotFoundException("Пользователь с id " + userId + " не найден"));
+        checkUser(userId);
         List<Booking> bookings = switch (state) {
             case PAST, REJECTED, FUTURE, WAITING, CURRENT ->
                     bookingStorage.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, state);
@@ -125,5 +119,15 @@ public class BookingServiceImpl implements BookingService {
         return bookings.stream()
                 .map(BookingMapper::mapToBookingDto)
                 .collect(Collectors.toList());
+    }
+
+    private User checkUser(long userId) {
+        return userStorage.findById(userId).orElseThrow(()
+                -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+    }
+
+    private Booking checkBooking(long bookingId) {
+        return bookingStorage.findById(bookingId).orElseThrow(()
+                -> new NotFoundException("Бронирование c id = " + bookingId + " не найдено"));
     }
 }

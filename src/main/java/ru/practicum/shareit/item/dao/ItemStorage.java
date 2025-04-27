@@ -1,17 +1,12 @@
 package ru.practicum.shareit.item.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
 
-public interface ItemStorage {
-    Item save(Item item);
-
-    Item findItemId(long id);
-
-    Item update(Item updateItem);
-
-    Collection<Item> findItemUserId(long userId);
-
-    Collection<Item> findItemText(String text);
+@Repository
+public interface ItemStorage extends JpaRepository<Item, Long> {
+    Collection<Item> findByOwnerId(long id);
 }

@@ -94,13 +94,13 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> lastBookings = bookingStorage.findAllByItemIdAndEndBeforeAndStatusOrderByEndDesc(itemId,
                 LocalDateTime.now(), Status.APPROVED);
         log.debug("последняя бронь {}", lastBookings);
-        if (!lastBookings.isEmpty()) {
+        if (!lastBookings.isEmpty() && userId.equals(item.getOwner().getId())) {
             lastBooking = BookingMapper.mapToBookingDto(lastBookings.getFirst());
         }
         List<Booking> nextBookings = bookingStorage.findAllByItemIdAndStartAfterOrderByStartAsc(itemId,
                 LocalDateTime.now());
         log.debug("следующая бронь {}", nextBookings);
-        if (!nextBookings.isEmpty()) {
+        if (!nextBookings.isEmpty() && userId.equals(item.getOwner().getId())) {
             nextBooking = BookingMapper.mapToBookingDto(nextBookings.getFirst());
         }
         log.debug("брони после маппера {} {}", lastBooking, nextBooking);

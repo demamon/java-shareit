@@ -64,8 +64,8 @@ public final class ItemMapper {
         dto.setDescription(item.getDescription());
         dto.setAvailable(item.getAvailable());
         dto.setComments(comments);
-        dto.setLastBookings(lastBookings);
-        dto.setNextBookings(nextBookings);
+        dto.setLastBooking(lastBookings);
+        dto.setNextBooking(nextBookings);
         return dto;
     }
 }

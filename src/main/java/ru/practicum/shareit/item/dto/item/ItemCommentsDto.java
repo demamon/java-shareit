@@ -19,6 +19,6 @@ public class ItemCommentsDto {
     String description;
     Boolean available;
     List<CommentResponseDto> comments;
-    BookingResponseDto lastBookings;
-    BookingResponseDto nextBookings;
+    BookingResponseDto lastBooking;
+    BookingResponseDto nextBooking;
 }

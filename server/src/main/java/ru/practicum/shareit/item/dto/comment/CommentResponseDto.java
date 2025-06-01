@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Builder
 public class CommentResponseDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     Long id;

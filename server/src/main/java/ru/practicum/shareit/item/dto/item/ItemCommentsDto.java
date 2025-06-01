@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dto.item;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,7 +12,6 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Builder
 public class ItemCommentsDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     Long id;

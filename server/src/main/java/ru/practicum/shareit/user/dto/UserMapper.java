@@ -24,9 +24,9 @@ public final class UserMapper {
     }
 
     public static User mapToUser(UserDto userDto) {
-        return User.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        return user;
     }
 }

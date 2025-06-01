@@ -20,12 +20,12 @@ public final class CommentMapper {
     }
 
     public static CommentResponseDto mapToCommentDto(Comment comment) {
-        return CommentResponseDto.builder()
-                .id(comment.getId())
-                .text(comment.getText())
-                .item(comment.getItem())
-                .authorName(comment.getAuthor().getName())
-                .created(comment.getCreated())
-                .build();
+        CommentResponseDto commentResponseDto = new CommentResponseDto();
+        commentResponseDto.setId(comment.getId());
+        commentResponseDto.setText(comment.getText());
+        commentResponseDto.setItem(comment.getItem());
+        commentResponseDto.setAuthorName(comment.getAuthor().getName());
+        commentResponseDto.setCreated(comment.getCreated());
+        return commentResponseDto;
     }
 }

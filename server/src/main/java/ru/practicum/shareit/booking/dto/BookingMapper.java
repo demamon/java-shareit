@@ -23,14 +23,13 @@ public class BookingMapper {
 
     public static BookingResponseDto mapToBookingDto(Booking booking) {
         log.debug("Передаем {} в маппер", booking);
-        BookingResponseDto bookingResponseDto = BookingResponseDto.builder()
-                .id(booking.getId())
-                .start(booking.getStart())
-                .end(booking.getEnd())
-                .item(booking.getItem())
-                .booker(booking.getUser())
-                .status(booking.getStatus())
-                .build();
+        BookingResponseDto bookingResponseDto = new BookingResponseDto();
+        bookingResponseDto.setId(booking.getId());
+        bookingResponseDto.setStart(booking.getStart());
+        bookingResponseDto.setEnd(booking.getEnd());
+        bookingResponseDto.setItem(booking.getItem());
+        bookingResponseDto.setBooker(booking.getUser());
+        bookingResponseDto.setStatus(booking.getStatus());
         log.debug("Отдаем {}, после маппера", bookingResponseDto);
         return bookingResponseDto;
     }

@@ -34,6 +34,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "item_request_id")
     ItemRequest itemRequest;
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Item item)) return false;

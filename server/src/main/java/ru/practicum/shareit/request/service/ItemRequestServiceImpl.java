@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dao.ItemStorage;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dao.ItemRequestStorage;
@@ -38,11 +39,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional
     public ItemRequestDto create(long userId, String description) {
-        Optional<User> mayBeUser = userStorage.findById(userId);
-        if (mayBeUser.isEmpty()) {
-            throw new NotFoundException("пользователя с id = " + userId + "не существует");
+        if (description.isBlank()) {
+            throw new ValidationException("description не может быть пустым");
         }
-        User user = mayBeUser.get();
+        User user = mayBeUser(userId);
         ItemRequest itemRequest = ItemRequestMapper.mapToRequest(user, description);
         itemRequest = itemRequestStorage.save(itemRequest);
         return ItemRequestMapper.mapToRequestDto(itemRequest);
@@ -50,6 +50,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public Collection<ItemRequestDto> getAllRequest(long userId) {
+        mayBeUser(userId);
         return itemRequestStorage.findByAuthorIdNotOrderByCreatedDesc(userId).stream()
                 .map(ItemRequestMapper::mapToRequestDto)
                 .collect(Collectors.toSet());
@@ -57,10 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public Collection<RequestWithItemDto> getRequests(long userId) {
-        Optional<User> mayBeUser = userStorage.findById(userId);
-        if (mayBeUser.isEmpty()) {
-            throw new NotFoundException("пользователя с id = " + userId + "не существует");
-        }
+        mayBeUser(userId);
         List<ItemRequest> itemRequestList = itemRequestStorage.findByAuthorIdOrderByCreatedDesc(userId);
         log.debug("список запросов {}", itemRequestList);
         List<Long> requestId = itemRequestList.stream().map(ItemRequest::getId).toList();
@@ -89,6 +87,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         log.debug("список предметов для запроса из базы {}", items);
         return ItemRequestMapper.mapToRequestWithItem(request, items);
 
+    }
+
+    private User mayBeUser(long userId) {
+        Optional<User> mayBeUser = userStorage.findById(userId);
+        if (mayBeUser.isEmpty()) {
+            throw new NotFoundException("пользователя с id = " + userId + "не существует");
+        }
+        return mayBeUser.get();
     }
 
 }

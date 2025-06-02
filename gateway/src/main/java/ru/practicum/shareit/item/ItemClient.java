@@ -43,7 +43,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> searchItems(String text) {
-        if (text == null || text.isEmpty() || text.isBlank()) {
+        if (text == null || text.isBlank()) {
             return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
         }
         return get("/search?text=" + text);
